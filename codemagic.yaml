@@ -1,22 +1,24 @@
 workflows:
-  android-java-debug:
-    name: Android Java Debug APK
+  android-java-build:
+    name: Android Java Build
     max_build_duration: 60
-    instance_type: linux_x2
+    instance_type: mac_mini_m2
+
     environment:
       java: 17
+
     scripts:
-      - name: Show project files
+      - name: Set Android SDK location
         script: |
-          ls -la
-          ls -la app
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+
+      - name: Make Gradle executable
+        script: |
+          chmod +x ./gradlew || true
+
       - name: Build debug APK
         script: |
-          if [ -x "./gradlew" ]; then
-            ./gradlew assembleDebug
-          else
-            gradle assembleDebug
-          fi
+          ./gradlew assembleDebug
+
     artifacts:
       - app/build/outputs/**/*.apk
-      - app/build/outputs/**/*.aab
