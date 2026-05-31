@@ -1,0 +1,22 @@
+workflows:
+  android-java-debug:
+    name: Android Java Debug APK
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      java: 17
+    scripts:
+      - name: Show project files
+        script: |
+          ls -la
+          ls -la app
+      - name: Build debug APK
+        script: |
+          if [ -x "./gradlew" ]; then
+            ./gradlew assembleDebug
+          else
+            gradle assembleDebug
+          fi
+    artifacts:
+      - app/build/outputs/**/*.apk
+      - app/build/outputs/**/*.aab
